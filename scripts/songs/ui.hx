@@ -1,5 +1,7 @@
 import flixel.math.FlxRect;
 
+using StringTools;
+
 for (i in 0...3)
     Paths.image('ui/noLoop' + i);
 
@@ -16,17 +18,13 @@ hud.add(frame);
 var shot:FlxSprite = gimmeSprite('shot');
 hud.add(shot);
 shot.x = FlxG.width / 2 - shot.width / 2;
+shot.alpha = 0.2;
 
 shot.y = FlxG.height - shot.height - 20;
 
-var barFill:FlxSprite = gimmeSprite('barFill');
-barFill.setPosition(876, frame.y + 235);
-hud.add(barFill);
-barFill.alpha = 0.5;
-
 for (i in 0...3)
 {
-    var obj:FlxSprite = gimmeSprite('loop' + i);
+    var obj:FlxSprite = gimmeSprite(([5, 10, 15][i] <= (CoolUtil.save.custom.data.lives ?? 15) ? 'loop' : 'noLoop') + i);
     hud.add(obj);
 
     obj.setPosition(FlxG.width - [135, 30, 10][i] - obj.width, FlxG.height - obj.height - 10);
@@ -36,14 +34,74 @@ function postCreate()
 {
     remove(game.uiGroup);
 
-    goodNoteHit();
-
     add(hud);
+
+    for (obj in hud)
+        obj.antialiasing = ClientPrefs.data.antialiasing;
 
     game.camGame.snapToTarget();
 }
 
-function goodNoteHit()
+function onUpdate(elapsed:Float)
 {
-    barFill.clipRect = new FlxRect(0, 0, barFill.width * (game.health / 2), barFill.height);
+    if (FlxG.keys.justPressed.SPACE)
+    {
+        shot.alpha = 1;
+
+        FlxTween.cancelTweensOf(shot);
+
+        FlxTween.tween(shot, {alpha: 0.2}, 0.5, {ease: FlxEase.cubeOut});
+    }
 }
+
+final missesLimit:Int = CoolUtil.save.custom.data.lives ?? 15;
+
+var missesCounter:Int = missesLimit;
+
+var text:FlxText = new FlxText(0, 0, 0, '', 40);
+hud.add(text);
+text.font = Paths.font('vcr.ttf');
+text.text = (missesLimit - missesCounter) + '/' + missesLimit;
+text.x = 945 - text.width / 2;
+text.y = 690 - text.height / 2;
+
+var score:FlxText = new FlxText(0, 0, 0, '0000000', 40);
+hud.add(score);
+score.font = Paths.font('vcr.ttf');
+score.x = 160 - score.width / 2;
+score.y = 667.5 - score.height / 2;
+
+function noteMiss(note:Note)
+{
+    missesCounter--;
+
+    text.text = (missesLimit - missesCounter) + '/' + missesLimit;
+    text.x = 945 - text.width / 2;
+
+    if (missesCounter <= 0)
+    {
+        CoolUtil.save.custom.data.lives = switch(missesLimit)
+        {
+            case 15:
+                10;
+            case 10:
+                5;
+            case 5:
+                1;
+            case 1:
+                15;
+        };
+
+        game.shouldClearMemory = false;
+
+        game.health = 0;
+    }
+}
+
+function onRecalculateRating()
+{
+    score.text = Std.string(game.songScore).lpad('0', 7);
+    score.x = 160 - score.width / 2;
+}
+
+game.skipCountdown = true;

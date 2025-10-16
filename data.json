@@ -1,4 +1,10 @@
 {
+    "title": "Trap 4 Silly Kids",
+    "icon": "images/sex/alejo el mejor autista",
+    "initialState": "MainMenuState",
+    "storyMenuState": "MainMenuState",
+    "freeplayState": "MainMenuState",
     //"loadDefaultWeeks": false,
-    "developerMode": true
+    "developerMode": true,
+    //"mobileDebug": true
 }
