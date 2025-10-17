@@ -1,3 +1,7 @@
+import flixel.addons.display.FlxBackdrop;
+
+import PublicGroup;
+
 var curTime:Float = 0;
 
 var shader:ALERuntimeShader;
@@ -88,11 +92,14 @@ fire.animation.addByPrefix('idle', 'fire', 12);
 fire.animation.play('idle');
 fire.blend = 0;
 
+var backdrop = new FlxBackdrop().makeGraphic(FlxG.width, FlxG.height);
+backdrop.alpha = 0;
+
 var wall = gimmeSprite('wall', -1000, 900, 1.3, 1.1);
 
 function postCreate()
 {
-    for (behGif in [sky, stars, mountain0, mountain1, mountain2, build0, clouds, build1, street, fire])
+    for (behGif in [sky, stars, mountain0, mountain1, mountain2, build0, clouds, build1, street, fire, backdrop])
         addBehindGF(behGif);
 
     for (froGif in [wall])
@@ -115,4 +122,29 @@ function onUpdate(elapsed:Float)
 function onSectionHit(curSection:Int)
 {
     game.defaultCamZoom = mustHitSection ? 0.8 : 0.5;
+}
+
+function onCreate()
+{
+    for (script in game.hScripts)
+    {
+        script.set('stage',
+            new PublicGroup(
+                {
+                    sky: sky,
+                    stars: stars,
+                    clouds: clouds,
+                    mountain0: mountain0,
+                    mountain1: mountain1,
+                    mountain2: mountain2,
+                    build0: build0,
+                    build1: build1,
+                    street: street,
+                    fire: fire,
+                    backdrop: backdrop,
+                    wall: wall
+                }
+            )
+        );
+    }
 }
