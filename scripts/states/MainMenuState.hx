@@ -118,7 +118,7 @@ function onUpdate(elapsed:Float)
                 switch (options[selInt])
                 {
                     case 'storyMode':
-                        CoolUtil.loadSong('bopeebo', 'hard');
+                        CoolUtil.loadSong('Break da Cage', 'normal');
                     case 'options':
                         CoolUtil.switchState(new OptionsState(false));
                 }
