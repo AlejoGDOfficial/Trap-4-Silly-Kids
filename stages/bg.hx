@@ -99,3 +99,8 @@ function onUpdate(elapsed:Float)
     if (shaderUpdate != null)
         shaderUpdate(elapsed);
 }
+
+function onSectionHit(curSection:Int)
+{
+    game.defaultCamZoom = mustHitSection ? 0.8 : 0.5;
+}
