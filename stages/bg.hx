@@ -1,60 +1,63 @@
+var curTime:Float = 0;
+
 var shader:ALERuntimeShader;
 
 var shaderUpdate:Float -> Void;
 
-var curTime:Float = 0;
-
-switch (CoolUtil.save.custom.data.lives ?? 15)
+if (!CoolVars.mobileControls)
 {
-    case 15:
-        shader = CoolUtil.createRuntimeShader('multiple');
+    switch (CoolUtil.save.custom.data.lives ?? 15)
+    {
+        case 15:
+            shader = CoolUtil.createRuntimeShader('multiple');
 
-        shader.setFloat('blue', 0.8);
+            shader.setFloat('blue', 0.8);
 
-        shaderUpdate = (elapsed) -> {
-            shader.setFloat('red', Math.sin(curTime) * 0.3 + 1);
-            shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
-        };
-    case 10:
-        shader = CoolUtil.createRuntimeShader('multiple');
+            shaderUpdate = (elapsed) -> {
+                shader.setFloat('red', Math.sin(curTime) * 0.3 + 1);
+                shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
+            };
+        case 10:
+            shader = CoolUtil.createRuntimeShader('multiple');
 
-        shader.setFloat('blue', 0.75);
+            shader.setFloat('blue', 0.75);
 
-        shaderUpdate = (elapsed) -> {
-            shader.setFloat('factor', Math.sin(curTime) * 0.2 + 1);
+            shaderUpdate = (elapsed) -> {
+                shader.setFloat('factor', Math.sin(curTime) * 0.2 + 1);
 
-            shader.setFloat('red', Math.sin(curTime) * 0.5 + 1.2);
-            shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
-        };
-    case 5:
-        shader = CoolUtil.createRuntimeShader('multiple');
+                shader.setFloat('red', Math.sin(curTime) * 0.5 + 1.2);
+                shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
+            };
+        case 5:
+            shader = CoolUtil.createRuntimeShader('multiple');
 
-        shader.setFloat('blue', 0.6);
+            shader.setFloat('blue', 0.6);
 
-        shaderUpdate = (elapsed) -> {
-            shader.setFloat('factor', Math.sin(curTime) * 0.2 + 2);
+            shaderUpdate = (elapsed) -> {
+                shader.setFloat('factor', Math.sin(curTime) * 0.2 + 2);
 
-            shader.setFloat('offset', Math.cos(curTime * 1) * 0.005);
+                shader.setFloat('offset', Math.cos(curTime * 1) * 0.005);
 
-            shader.setFloat('red', Math.sin(curTime) * 0.5 + 1.2);
-            shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
-        };
-    case 1:
-        shader = CoolUtil.createRuntimeShader('multiple');
+                shader.setFloat('red', Math.sin(curTime) * 0.5 + 1.2);
+                shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
+            };
+        case 1:
+            shader = CoolUtil.createRuntimeShader('multiple');
 
-        shader.setFloat('blue', 0.5);
-        shader.setFloat('green', 0.5);
+            shader.setFloat('blue', 0.5);
+            shader.setFloat('green', 0.5);
 
-        shaderUpdate = (elapsed) -> {
-            shader.setFloat('factor', Math.sin(curTime) * 0.2 + 2);
+            shaderUpdate = (elapsed) -> {
+                shader.setFloat('factor', Math.sin(curTime) * 0.2 + 2);
 
-            shader.setFloat('offset', Math.cos(curTime * 1) * 0.01);
+                shader.setFloat('offset', Math.cos(curTime * 1) * 0.01);
 
-            shader.setFloat('red', Math.sin(curTime) * 0.5 + 0.8);
-        };
+                shader.setFloat('red', Math.sin(curTime) * 0.5 + 0.8);
+            };
+    }
+
+    CoolUtil.setCameraShaders(game.camGame, [shader]);
 }
-
-CoolUtil.setCameraShaders(game.camGame, [shader]);
 
 function gimmeSprite(spr:FlxSprite, ?x:Float, ?y:Float, ?sX:Float, ?sY:Float):FlxSprite
 {
@@ -94,10 +97,13 @@ function onUpdate(elapsed:Float)
 {
     curTime += elapsed;
 
-    shader.setFloat('time', curTime);
+    if (!CoolVars.mobileControls)
+    {
+        shader.setFloat('time', curTime);
 
-    if (shaderUpdate != null)
-        shaderUpdate(elapsed);
+        if (shaderUpdate != null)
+            shaderUpdate(elapsed);
+    }
 }
 
 function onSectionHit(curSection:Int)
