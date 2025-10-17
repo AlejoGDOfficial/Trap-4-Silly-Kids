@@ -1,3 +1,61 @@
+var shader:ALERuntimeShader;
+
+var shaderUpdate:Float -> Void;
+
+var curTime:Float = 0;
+
+switch (CoolUtil.save.custom.data.lives ?? 15)
+{
+    case 15:
+        shader = CoolUtil.createRuntimeShader('multiple');
+
+        shader.setFloat('blue', 0.8);
+
+        shaderUpdate = (elapsed) -> {
+            shader.setFloat('red', Math.sin(curTime) * 0.3 + 1);
+            shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
+        };
+    case 10:
+        shader = CoolUtil.createRuntimeShader('multiple');
+
+        shader.setFloat('blue', 0.75);
+
+        shaderUpdate = (elapsed) -> {
+            shader.setFloat('factor', Math.sin(curTime) * 0.2 + 1);
+
+            shader.setFloat('red', Math.sin(curTime) * 0.5 + 1.2);
+            shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
+        };
+    case 5:
+        shader = CoolUtil.createRuntimeShader('multiple');
+
+        shader.setFloat('blue', 0.6);
+
+        shaderUpdate = (elapsed) -> {
+            shader.setFloat('factor', Math.sin(curTime) * 0.2 + 2);
+
+            shader.setFloat('offset', Math.cos(curTime * 1) * 0.005);
+
+            shader.setFloat('red', Math.sin(curTime) * 0.5 + 1.2);
+            shader.setFloat('green', Math.cos(curTime) * 0.1 + 0.9);
+        };
+    case 1:
+        shader = CoolUtil.createRuntimeShader('multiple');
+
+        shader.setFloat('blue', 0.5);
+        shader.setFloat('green', 0.5);
+
+        shaderUpdate = (elapsed) -> {
+            shader.setFloat('factor', Math.sin(curTime) * 0.2 + 2);
+
+            shader.setFloat('offset', Math.cos(curTime * 1) * 0.01);
+
+            shader.setFloat('red', Math.sin(curTime) * 0.5 + 0.8);
+        };
+}
+
+CoolUtil.setCameraShaders(game.camGame, [shader]);
+
 function gimmeSprite(spr:FlxSprite, ?x:Float, ?y:Float, ?sX:Float, ?sY:Float):FlxSprite
 {
     var spr = new FlxSprite(x, y).loadGraphic(Paths.image('bg/' + spr));
@@ -19,7 +77,7 @@ var mountain2 = gimmeSprite('mountain2', -1000, 500, 0.5, 0.6);
 var build0 = gimmeSprite('build0', -650, -200, 0.6, 0.7);
 var build1 = gimmeSprite('build1', 1800, -100, 0.8, 0.9);
 
-var street = gimmeSprite('street', -1000, -450);
+var street = gimmeSprite('street', -1000, 600);
 
 var wall = gimmeSprite('wall', -1000, 900, 1.3, 1.1);
 
@@ -30,4 +88,14 @@ function postCreate()
 
     for (froGif in [wall])
         add(froGif);
+}
+
+function onUpdate(elapsed:Float)
+{
+    curTime += elapsed;
+
+    shader.setFloat('time', curTime);
+
+    if (shaderUpdate != null)
+        shaderUpdate(elapsed);
 }

@@ -105,3 +105,5 @@ function onRecalculateRating()
 }
 
 game.skipCountdown = true;
+
+PlayState.startOnTime = 4 * 60 / Conductor.bpm * 1000;

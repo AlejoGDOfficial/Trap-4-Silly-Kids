@@ -1,5 +1,6 @@
 import funkin.states.OptionsState;
 
+import flixel.input.keyboard.FlxKey;
 import flixel.text.FlxTextBorderStyle;
 import flixel.effects.FlxFlicker;
 
@@ -139,6 +140,9 @@ function onUpdate(elapsed:Float)
 
             CoolUtil.switchState(new CustomState(CoolVars.data.masterEditorState));
         }
+
+        if (FlxG.keys.justPressed.CONTROL || (CoolVars.mobileControls && MobileControls.anyJustPressed([FlxKey.CONTROL])))
+            CoolUtil.openSubState(new CustomSubState('GameplayChangersSubState'));
     }
 }
 
@@ -156,7 +160,8 @@ function postCreate()
             [50, 395, ClientPrefs.controls.ui.up, '< normal', 90],
             [50, 550, ClientPrefs.controls.ui.down, '> normal', 90],
             [1105, 485, ClientPrefs.controls.ui.accept, 'a uppercase'],
-            [950, 485, ClientPrefs.controls.ui.back, 'b uppercase']
+            [950, 485, ClientPrefs.controls.ui.back, 'b uppercase'],
+            [795, 485, [FlxKey.CONTROL], 'c uppercase']
         ];
 
         for (button in buttonMap)
