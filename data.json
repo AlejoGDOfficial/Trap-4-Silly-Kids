@@ -6,6 +6,6 @@
     "freeplayState": "MainMenuState",
     "discordID": "1428853170423205998",
     //"loadDefaultWeeks": false,
-    "developerMode": true,
+    //"developerMode": true,
     //"mobileDebug": true
 }

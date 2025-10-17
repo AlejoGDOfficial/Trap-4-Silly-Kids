@@ -42,6 +42,12 @@ function postCreate()
     game.camGame.snapToTarget();
 }
 
+var wantsDebug:Bool = true;
+
+var debugQuoteList:Array<String> = Paths.getContent('quotes.txt').split('\n');
+
+var debugQuotePhrase:Array<String> = debugQuoteList[FlxG.random.int(0, debugQuoteList.length - 1)].split('::');
+
 function onUpdate(elapsed:Float)
 {
     if (FlxG.keys.justPressed.SPACE)
@@ -51,6 +57,26 @@ function onUpdate(elapsed:Float)
         FlxTween.cancelTweensOf(shot);
 
         FlxTween.tween(shot, {alpha: 0.2}, 0.5, {ease: FlxEase.cubeOut});
+    }
+
+    if (Controls.ENGINE_CHART && wantsDebug)
+    {
+        wantsDebug = false;
+
+        FlxTween.tween(game, {playbackRate: 5}, 1, {
+            ease: FlxEase.cubeIn,
+            onComplete: (_) -> {
+                FlxG.sound.music.pause();
+
+                game.vocals?.pause();
+
+                game.health = 0;
+
+                FlxG.fullscreen = false;
+
+                WindowsAPI.showMessageBox(debugQuotePhrase[0], debugQuotePhrase[1], 0x00000030);
+            }
+        });
     }
 
     game.camOther.zoom = CoolUtil.fpsLerp(game.camOther.zoom, 1, 0.2);

@@ -4,7 +4,7 @@ var beatFunc:Int -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 71 * 60 / Conductor.bpm * 1000 : 0;
+var startTime:Float = !CoolVars.data.developerMode ? 71 * 60 / Conductor.bpm * 1000 : 0;
 
 function postCreate()
 {
