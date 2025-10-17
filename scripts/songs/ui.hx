@@ -6,7 +6,7 @@ for (i in 0...3)
     Paths.image('ui/noLoop' + i);
 
 var hud:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
-hud.cameras = [game.camHUD];
+hud.cameras = [game.camOther];
 
 function gimmeSprite(str:String):FlxSprite
     return new FlxSprite().loadGraphic(Paths.image('ui/' + str));
@@ -52,6 +52,8 @@ function onUpdate(elapsed:Float)
 
         FlxTween.tween(shot, {alpha: 0.2}, 0.5, {ease: FlxEase.cubeOut});
     }
+
+    game.camOther.zoom = CoolUtil.fpsLerp(game.camOther.zoom, 1, 0.2);
 }
 
 final missesLimit:Int = CoolUtil.save.custom.data.lives ?? 15;
@@ -104,6 +106,6 @@ function onRecalculateRating()
     score.x = 160 - score.width / 2;
 }
 
-game.skipCountdown = true;
+game.camZooming = false;
 
-PlayState.startOnTime = 4 * 60 / Conductor.bpm * 1000;
+game.skipCountdown = true;

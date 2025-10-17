@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="fire.png">
+	<SubTexture name="fire0000" x="0" y="0" width="1366" height="1340" frameX="-38" frameY="-24" frameWidth="1437" frameHeight="1368"/>
+	<SubTexture name="fire0001" x="1366" y="0" width="1369" height="1354" frameX="-68" frameY="-10" frameWidth="1437" frameHeight="1368"/>
+	<SubTexture name="fire0002" x="0" y="1354" width="1283" height="1368" frameX="0" frameY="0" frameWidth="1437" frameHeight="1368"/>
+	<SubTexture name="fire0003" x="1283" y="1354" width="1198" height="1095" frameX="-91" frameY="-269" frameWidth="1437" frameHeight="1368"/>
+</TextureAtlas>

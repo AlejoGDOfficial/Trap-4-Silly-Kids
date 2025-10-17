@@ -82,11 +82,17 @@ var build1 = gimmeSprite('build1', 1800, -100, 0.8, 0.9);
 
 var street = gimmeSprite('street', -1000, 600);
 
+var fire = new FlxSprite(-1500, -200);
+fire.frames = Paths.getSparrowAtlas('bg/fire');
+fire.animation.addByPrefix('idle', 'fire', 12);
+fire.animation.play('idle');
+fire.blend = 0;
+
 var wall = gimmeSprite('wall', -1000, 900, 1.3, 1.1);
 
 function postCreate()
 {
-    for (behGif in [sky, stars, mountain0, mountain1, mountain2, build0, clouds, build1, street])
+    for (behGif in [sky, stars, mountain0, mountain1, mountain2, build0, clouds, build1, street, fire])
         addBehindGF(behGif);
 
     for (froGif in [wall])
