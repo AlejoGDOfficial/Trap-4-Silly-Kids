@@ -185,11 +185,11 @@ function onUpdate(elapsed:Float)
 			case 'exit to menu':
 				if (CoolVars.data.developerMode)
 				{
+					CoolVars.skipTransIn = true;
+
 					PlayStateUtil.exitSong();
 				} else {
 					canSelect = false;
-
-					CoolVars.skipTransIn = true;
 
 					var curSpr:Alphabet = sprites.members[selInt];
 
