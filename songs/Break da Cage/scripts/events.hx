@@ -4,7 +4,7 @@ var beatFunc:Int -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 367 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
+var startTime:Float = CoolVars.data.developerMode ? 390 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
 
 function postCreate()
 {
@@ -219,8 +219,14 @@ function onBeatHit(curBeat:Int)
                 FlxTween.tween(game.camGame, {angle: curBeat % 2 == 0 ? -2 : 2}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
                 FlxTween.tween(game.camHUD, {angle: curBeat % 2 == 0 ? -1 : 1}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
             };
-        case 392:
-            bopModulo = 0;
+        case 391:
+            bopModulo = 1;
+
+            zoomMult = 0.5;
+
+            beatFunc = (curBeat) -> {
+                zoomMult += 0.5;
+            };
 
             for (cam in [game.camGame, game.camHUD])
             {
@@ -228,8 +234,10 @@ function onBeatHit(curBeat:Int)
                 
                 FlxTween.tween(cam, {angle: 0}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
             }
-
-            beatFunc = null;
+            
+            stage.members.backdrop.color = FlxColor.BLACK;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0.5}, 30 / Conductor.bpm);
     }
 
     if (beatFunc != null)
