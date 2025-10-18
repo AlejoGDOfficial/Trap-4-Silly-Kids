@@ -2,9 +2,11 @@ game.cameraSpeed = 0.5;
 
 var beatFunc:Int -> Void = null;
 
+var updateFunc:Float -> Void = null;
+
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 390 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
+var startTime:Float = CoolVars.data.developerMode ? 555 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
 
 function postCreate()
 {
@@ -225,7 +227,7 @@ function onBeatHit(curBeat:Int)
             zoomMult = 0.5;
 
             beatFunc = (curBeat) -> {
-                zoomMult += 0.5;
+                zoomMult += 1;
             };
 
             for (cam in [game.camGame, game.camHUD])
@@ -238,6 +240,80 @@ function onBeatHit(curBeat:Int)
             stage.members.backdrop.color = FlxColor.BLACK;
             
             FlxTween.tween(stage.members.backdrop, {alpha: 0.5}, 30 / Conductor.bpm);
+        case 400:
+            bopModulo = 1;
+
+            zoomMult = 3;
+
+            camZoom = 0.3;
+
+            beatFunc = null;
+
+            var curTime:Float = 0;
+
+            updateFunc = (elapsed) -> {
+                curTime += elapsed * 2;
+
+                game.triggerEvent('Camera Follow Pos', Math.sin(curTime) * 100 + 825, Math.sin(curTime * 2) * 50 + 530, Conductor.songPosition);
+            }
+        case 432:
+            camZoom = 0.45;
+            
+            game.triggerEvent('Camera Follow Pos', null, null, Conductor.songPosition);
+
+            updateFunc = null;
+        case 464:
+            bopModulo = 0;
+            
+            camZoom = 0.5;
+        case 472:
+            camZoom = 0.6;
+        case 480:
+            camZoom = 0.5;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0}, 30 / Conductor.bpm);
+        case 484:
+            bopModulo = 1;
+
+            zoomMult = 4;
+        case 500:
+            camZoom = 0.55;
+        case 532:
+            bopModulo = 1;
+
+            zoomMult = -1;
+
+            stage.members.backdrop.color = FlxColor.BLACK;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0.75}, 30 / Conductor.bpm);
+        case 548:
+            bopModulo = 0;
+
+            zoomMult = 1;
+        case 556:
+            bopModulo = 2;
+
+            zoomMult = 0;
+
+            FlxTween.num(0, 5, 64 * 60 / Conductor.bpm, {ease: FlxEase.cubeIn}, (num) -> { zoomMult = num; });
+
+            game.camGame.flash(FlxColor.BLACK, 64 * 60 / Conductor.bpm, null, true);
+
+            var curTime:Float = 0;
+
+            updateFunc = (elapsed) -> {
+                curTime += elapsed * zoomMult / 2.5;
+
+                game.triggerEvent('Camera Follow Pos', Math.sin(curTime) * 100 + 1500, Math.sin(curTime * 2) * 50 + 675, Conductor.songPosition);
+            }
+        case 588:
+            bopModulo = 1;
+        case 620:
+            bopModulo = 0;
+
+            updateFunc = null;
+            
+            game.triggerEvent('Camera Follow Pos', null, null, Conductor.songPosition);
     }
 
     if (beatFunc != null)
@@ -293,6 +369,9 @@ function onUpdate(elapsed:Float)
     game.camGame.zoom = CoolUtil.fpsLerp(game.camGame.zoom, game.defaultCamZoom, factor);
     game.camHUD.zoom = CoolUtil.fpsLerp(game.camHUD.zoom, 0.9, factor);
     game.camOther.zoom = CoolUtil.fpsLerp(game.camOther.zoom, 1, factor);
+
+    if (updateFunc != null)
+        updateFunc(elapsed);
 
     game.camHUD.scroll.x = game.camGame.scroll.x - 100;
     game.camHUD.scroll.y = game.camGame.scroll.y - 50;
