@@ -6,6 +6,8 @@ var bopModulo:Int = 4;
 
 var startTime:Float = CoolVars.data.developerMode ? 331 * 60 / Conductor.bpm * 1000 : 0;
 
+startTime = (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
+
 function postCreate()
 {
     game.comboGroup.scrollFactor.set(0.25, 0.25);
@@ -45,6 +47,14 @@ function set_camZoom(value:Float):Float
 
 function onBeatHit(curBeat:Int)
 {
+    switch (curBeat)
+    {
+        case 198, 478, 622:
+            CoolUtil.save.custom.data.initTime = curBeat * 60 / Conductor.bpm;
+        case 266, 550, 686:
+            CoolUtil.save.custom.data.initTime = null;
+    }
+
     switch (curBeat)
     {
         case 32:
@@ -241,4 +251,9 @@ function onUpdate(elapsed:Float)
 
     game.camHUD.scroll.x = game.camGame.scroll.x - 100;
     game.camHUD.scroll.y = game.camGame.scroll.y - 50;
+}
+
+function onDestroy()
+{
+    CoolUtil.save.custom.data.initTime ?= Math.max(0, Conductor.songPosition - 10000);
 }

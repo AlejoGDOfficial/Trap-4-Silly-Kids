@@ -63,7 +63,7 @@ function onUpdate(elapsed:Float)
     {
         wantsDebug = false;
 
-        FlxTween.tween(game, {playbackRate: 5}, 1, {
+        FlxTween.tween(game, {playbackRate: 5}, 5, {
             ease: FlxEase.cubeIn,
             onComplete: (_) -> {
                 FlxG.sound.music.pause();
