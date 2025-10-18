@@ -115,6 +115,8 @@ function noteMiss(note:Note)
             case 5:
                 1;
             case 1:
+                CoolUtil.save.custom.data.initTime = 0;
+                
                 15;
         };
 
@@ -122,6 +124,11 @@ function noteMiss(note:Note)
 
         game.health = 0;
     }
+}
+
+function onDestroy()
+{
+    CoolUtil.save.custom.data.initTime ??= Math.max(0, Conductor.songPosition - 10000);
 }
 
 function onRecalculateRating()

@@ -4,9 +4,7 @@ var beatFunc:Int -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 331 * 60 / Conductor.bpm * 1000 : 0;
-
-startTime = (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
+var startTime:Float = CoolVars.data.developerMode ? 331 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
 
 function postCreate()
 {
@@ -251,9 +249,4 @@ function onUpdate(elapsed:Float)
 
     game.camHUD.scroll.x = game.camGame.scroll.x - 100;
     game.camHUD.scroll.y = game.camGame.scroll.y - 50;
-}
-
-function onDestroy()
-{
-    CoolUtil.save.custom.data.initTime ?= Math.max(0, Conductor.songPosition - 10000);
 }
