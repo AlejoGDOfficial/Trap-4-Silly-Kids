@@ -4,12 +4,20 @@ var beatFunc:Int -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = !CoolVars.data.developerMode ? 71 * 60 / Conductor.bpm * 1000 : 0;
+var startTime:Float = CoolVars.data.developerMode ? 299 * 60 / Conductor.bpm * 1000 : 0;
 
 function postCreate()
 {
+    game.comboGroup.scrollFactor.set(0.25, 0.25);
+
+    game.comboGroup.alpha = 0.25;
+
     if (startTime > 0)
+    {
+        game.cameraSpeed = 2;
+
         return;
+    }
 
     game.camHUD.alpha = 0;
     game.camOther.alpha = 0;
@@ -20,6 +28,19 @@ function postCreate()
     stage.members.backdrop.color = FlxColor.BLACK;
     stage.members.backdrop.alpha = 0.75;
     stage.members.wall.color = FlxColor.GRAY;
+}
+
+var zoomMult:Float = 1;
+
+var camZoom(default, set):Float = 0.5;
+
+function set_camZoom(value:Float):Float
+{
+    camZoom = value;
+
+    setCameraZoom();
+
+    return camZoom;
 }
 
 function onBeatHit(curBeat:Int)
@@ -78,16 +99,103 @@ function onBeatHit(curBeat:Int)
             stage.members.backdrop.alpha = 0;
 
             stage.members.wall.alpha = 1;
-        case 184:
+        case 81:
             bopModulo = 0;
-        case 184:
+
+            game.defaultCamZoom = mustHitSection ? camZoom * 1.5 : camZoom;
+    
+            FlxTween.tween(game.camGame, {angle: 5}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+        case 83:
             bopModulo = 1;
+        case 84:
+            FlxTween.tween(game.camGame, {angle: 0}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+        case 104:
+            bopModulo = 0;
+
+            camZoom = 0.8;
+
+            stage.members.backdrop.color = FlxColor.BLACK;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0.5}, 30 / Conductor.bpm);
+        case 107:
+            zoomMult = 5;
+
+            camZoom = 0.6;
+            
+            bopModulo = 1;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0}, 30 / Conductor.bpm);
+        case 108:
+            zoomMult = 1;
+
+            camZoom = 0.5;
+        case 136:
+            bopModulo = 2;
+
+            stage.members.backdrop.color = FlxColor.fromRGB(10, 0, 0);
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0.75}, 30 / Conductor.bpm);
+
+            beatFunc = (curBeat) -> {
+                if (curBeat % 4 == 0)
+                    camZoom = curBeat % 8 == 0 ? 0.6 : 0.5;
+            };
+        case 168:
+            bopModulo = 1;
+        case 200:
+            bopModulo = 4;
+        case 204:
+            bopModulo = 1;
+            
+            zoomMult = 2;
+
+            FlxTween.tween(stage.members.backdrop, {alpha: 0}, 30 / Conductor.bpm);
+        case 251:
+            zoomMult = -1;
+
+            game.cameraSpeed = 1;
+            
+            stage.members.backdrop.color = FlxColor.BLACK;
+
+            camZoom = 0.7;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0.75}, 60 / Conductor.bpm);
+        case 260:
+            camZoom = 0.6;
+            
+            FlxTween.tween(stage.members.backdrop, {alpha: 0.5}, 60 / Conductor.bpm);
+        case 268:
+            FlxTween.tween(stage.members.backdrop, {alpha: 0}, 30 / Conductor.bpm);
+
+            beatFunc = (curBeat) -> {
+                if (curBeat % 4 == 0)
+                {
+                    bopModulo = curBeat % 8 == 0 ? 2 : 1;
+            
+                    zoomMult = curBeat % 8 == 0 ? 2.5 : 5;
+
+                    camZoom = curBeat % 8 == 0 ? 0.5 : 0.45;
+
+                    game.cameraSpeed = curBeat % 8 == 0 ? 2 : 2.25;
+                }
+            };
+        case 300:
     }
 
     if (beatFunc != null)
         beatFunc(curBeat);
 
     bopCamera(curBeat);
+}
+
+function onSectionHit(curSection:Int)
+{
+    setCameraZoom();
+}
+
+function setCameraZoom()
+{
+    game.defaultCamZoom = mustHitSection ? camZoom * 1.5 : camZoom;
 }
 
 function bopCamera(curBeat:Int)
@@ -97,14 +205,16 @@ function bopCamera(curBeat:Int)
 
     if (curBeat % bopModulo == 0)
     {
-        game.camGame.zoom += 0.0125;
-        game.camHUD.zoom += 0.05;
-        game.camOther.zoom += 0.0075;
+        game.camGame.zoom += 0.0125 * zoomMult;
+        game.camHUD.zoom += 0.05 * zoomMult;
+        game.camOther.zoom += 0.0075 * zoomMult;
     }
 }
 
 function onUpdate(elapsed:Float)
 {
+    game.camHUD.scroll.y = 10;
+
     if (FlxG.sound.music.time < startTime)
     {
         FlxG.sound.music.time = startTime;
@@ -115,6 +225,9 @@ function onUpdate(elapsed:Float)
     final factor:Float = 0.05 * game.cameraSpeed * 2;
 
     game.camGame.zoom = CoolUtil.fpsLerp(game.camGame.zoom, game.defaultCamZoom, factor);
-    game.camHUD.zoom = CoolUtil.fpsLerp(game.camHUD.zoom, 0.95, factor);
+    game.camHUD.zoom = CoolUtil.fpsLerp(game.camHUD.zoom, 0.9, factor);
     game.camOther.zoom = CoolUtil.fpsLerp(game.camOther.zoom, 1, factor);
+
+    game.camHUD.scroll.x = game.camGame.scroll.x - 100;
+    game.camHUD.scroll.y = game.camGame.scroll.y - 50;
 }

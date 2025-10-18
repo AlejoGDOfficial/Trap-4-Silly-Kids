@@ -119,11 +119,6 @@ function onUpdate(elapsed:Float)
     }
 }
 
-function onSectionHit(curSection:Int)
-{
-    game.defaultCamZoom = mustHitSection ? 0.8 : 0.5;
-}
-
 function onCreate()
 {
     for (script in game.hScripts)

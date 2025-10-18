@@ -78,8 +78,6 @@ function onUpdate(elapsed:Float)
             }
         });
     }
-
-    game.camOther.zoom = CoolUtil.fpsLerp(game.camOther.zoom, 1, 0.2);
 }
 
 final missesLimit:Int = CoolUtil.save.custom.data.lives ?? 15;
