@@ -6,7 +6,7 @@ var updateFunc:Float -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 555 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
+var startTime:Float = CoolVars.data.developerMode ? 687 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
 
 function postCreate()
 {
@@ -305,6 +305,8 @@ function onBeatHit(curBeat:Int)
                 curTime += elapsed * zoomMult / 2.5;
 
                 game.triggerEvent('Camera Follow Pos', Math.sin(curTime) * 100 + 1500, Math.sin(curTime * 2) * 50 + 675, Conductor.songPosition);
+
+                game.camGame.angle = Math.cos(curTime) * 2;
             }
         case 588:
             bopModulo = 1;
@@ -314,6 +316,50 @@ function onBeatHit(curBeat:Int)
             updateFunc = null;
             
             game.triggerEvent('Camera Follow Pos', null, null, Conductor.songPosition);
+            
+            game.camGame.angle = 0;
+        case 624:
+            bopModulo = 16;
+
+            camZoom = 0.45;
+
+            zoomMult = 4;
+
+            game.cameraSpeed = 2.5;
+            
+            bopCamera();
+        case 628:
+            bopCamera();
+        case 632:
+            bopModulo = 1;
+
+            beatFunc = (curBeat) -> {
+                FlxTween.cancelTweensOf(game.camGame);
+                FlxTween.cancelTweensOf(game.camHUD);
+
+                FlxTween.tween(game.camGame, {angle: curBeat % 2 == 0 ? -2 : 2}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+                FlxTween.tween(game.camHUD, {angle: curBeat % 2 == 0 ? -1 : 1}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+            };
+        case 688:
+            bopModulo = 0;
+
+            beatFunc = null;
+
+            for (cam in [game.camGame, game.camHUD])
+            {
+                FlxTween.cancelTweensOf(cam);
+                
+                FlxTween.tween(cam, {angle: 0}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+            }
+            
+            for (cam in [game.camHUD, game.camOther])
+                cam.visible = false;
+
+            camZoom = 0.4;
+
+            game.cameraSpeed = 0.5;
+
+            game.camGame.flash(null, 480 / Conductor.bpm, null, true);
     }
 
     if (beatFunc != null)
