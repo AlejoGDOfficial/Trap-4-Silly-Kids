@@ -4,7 +4,7 @@ var beatFunc:Int -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 299 * 60 / Conductor.bpm * 1000 : 0;
+var startTime:Float = CoolVars.data.developerMode ? 331 * 60 / Conductor.bpm * 1000 : 0;
 
 function postCreate()
 {
@@ -144,6 +144,10 @@ function onBeatHit(curBeat:Int)
             bopModulo = 1;
         case 200:
             bopModulo = 4;
+            
+            beatFunc = null;
+        case 202:
+            camZoom = 0.5;
         case 204:
             bopModulo = 1;
             
@@ -179,7 +183,14 @@ function onBeatHit(curBeat:Int)
                     game.cameraSpeed = curBeat % 8 == 0 ? 2 : 2.25;
                 }
             };
-        case 300:
+        case 332:
+            beatFunc = null;
+        case 336:
+            bopModulo = 1;
+
+            camZoom = 0.5;
+
+            zoomMult = 3;
     }
 
     if (beatFunc != null)
