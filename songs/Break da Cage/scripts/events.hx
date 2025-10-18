@@ -4,7 +4,7 @@ var beatFunc:Int -> Void = null;
 
 var bopModulo:Int = 4;
 
-var startTime:Float = CoolVars.data.developerMode ? 331 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
+var startTime:Float = CoolVars.data.developerMode ? 367 * 60 / Conductor.bpm * 1000 : (CoolUtil.save.custom.data.initTime ?? 0) * 1000;
 
 function postCreate()
 {
@@ -47,7 +47,7 @@ function onBeatHit(curBeat:Int)
 {
     switch (curBeat)
     {
-        case 198, 478, 622:
+        case 200, 478, 622:
             CoolUtil.save.custom.data.initTime = curBeat * 60 / Conductor.bpm;
         case 266, 550, 686:
             CoolUtil.save.custom.data.initTime = null;
@@ -193,12 +193,34 @@ function onBeatHit(curBeat:Int)
             };
         case 332:
             beatFunc = null;
+
+            game.cameraSpeed = 1;
         case 336:
             bopModulo = 1;
 
             camZoom = 0.5;
 
             zoomMult = 3;
+
+            game.cameraSpeed = 2;
+        case 368:
+            bopModulo = 1;
+
+            camZoom = 0.45;
+
+            zoomMult = 4;
+
+            game.cameraSpeed = 2.5;
+
+            beatFunc = (curBeat) -> {
+                FlxTween.cancelTweensOf(game.camGame);
+                FlxTween.cancelTweensOf(game.camHUD);
+
+                FlxTween.tween(game.camGame, {angle: curBeat % 2 == 0 ? -2 : 2}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+                FlxTween.tween(game.camHUD, {angle: curBeat % 2 == 0 ? -1 : 1}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+            };
+        case 392:
+            beatFunc = null;
     }
 
     if (beatFunc != null)
@@ -230,16 +252,19 @@ function bopCamera(curBeat:Int)
     }
 }
 
-function onUpdate(elapsed:Float)
+function onSongStart()
 {
-    game.camHUD.scroll.y = 10;
-
     if (FlxG.sound.music.time < startTime)
     {
         FlxG.sound.music.time = startTime;
         
-        game.clearNotesBefore(startTime);
+        game.clearNotesBefore(startTime + 1000);
     }
+}
+
+function onUpdate(elapsed:Float)
+{
+    game.camHUD.scroll.y = 10;
 
     final factor:Float = 0.05 * game.cameraSpeed * 2;
 

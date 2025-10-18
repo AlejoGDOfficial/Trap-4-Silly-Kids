@@ -128,7 +128,7 @@ function noteMiss(note:Note)
 
 function onDestroy()
 {
-    CoolUtil.save.custom.data.initTime ??= Math.max(0, Conductor.songPosition - 10000);
+    CoolUtil.save.custom.data.initTime ??= Math.max(0, (Conductor.songPosition - 10000) / 1000);
 }
 
 function onRecalculateRating()
