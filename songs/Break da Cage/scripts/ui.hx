@@ -15,12 +15,14 @@ var frame:FlxSprite = gimmeSprite('frame');
 frame.y = FlxG.height - frame.height;
 hud.add(frame);
 
+/*
 var shot:FlxSprite = gimmeSprite('shot');
 hud.add(shot);
 shot.x = FlxG.width / 2 - shot.width / 2;
 shot.alpha = 0.2;
 
 shot.y = FlxG.height - shot.height - 20;
+*/
 
 for (i in 0...3)
 {
@@ -50,6 +52,7 @@ var debugQuotePhrase:Array<String> = debugQuoteList[FlxG.random.int(0, debugQuot
 
 function onUpdate(elapsed:Float)
 {
+    /*
     if (FlxG.keys.justPressed.SPACE)
     {
         shot.alpha = 1;
@@ -58,6 +61,7 @@ function onUpdate(elapsed:Float)
 
         FlxTween.tween(shot, {alpha: 0.2}, 0.5, {ease: FlxEase.cubeOut});
     }
+        */
 
     if (Controls.ENGINE_CHART && wantsDebug)
     {

@@ -220,6 +220,15 @@ function onBeatHit(curBeat:Int)
                 FlxTween.tween(game.camHUD, {angle: curBeat % 2 == 0 ? -1 : 1}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
             };
         case 392:
+            bopModulo = 0;
+
+            for (cam in [game.camGame, game.camHUD])
+            {
+                FlxTween.cancelTweensOf(cam);
+                
+                FlxTween.tween(cam, {angle: 0}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+            }
+
             beatFunc = null;
     }
 
@@ -254,12 +263,17 @@ function bopCamera(curBeat:Int)
 
 function onSongStart()
 {
-    if (FlxG.sound.music.time < startTime)
+    if (FlxG.sound.music.time < startTime && startTime < FlxG.sound.music.time)
     {
         FlxG.sound.music.time = startTime;
         
         game.clearNotesBefore(startTime + 1000);
     }
+}
+
+function onEndSong()
+{
+    FlxG.sound.music.time = 0;
 }
 
 function onUpdate(elapsed:Float)
