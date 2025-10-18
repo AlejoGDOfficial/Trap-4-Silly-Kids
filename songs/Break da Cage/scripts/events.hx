@@ -263,7 +263,7 @@ function bopCamera(curBeat:Int)
 
 function onSongStart()
 {
-    if (FlxG.sound.music.time < startTime && startTime < FlxG.sound.music.time)
+    if (FlxG.sound.music.time < startTime && startTime < FlxG.sound.music.length)
     {
         FlxG.sound.music.time = startTime;
         
